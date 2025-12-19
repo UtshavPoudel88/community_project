@@ -1,3 +1,4 @@
+import 'package:community/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:community/screens/explore_screen.dart';
@@ -15,7 +16,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Kept for future use
   List<Map<String, String>> communities = [
     {'title': 'Global Football', 'image': 'assets/icons/football.jpg'},
     {'title': 'Politics', 'image': 'assets/icons/politics.png'},
@@ -60,9 +60,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
 
-        body: const SizedBox.shrink(), // empty for now
-
+        body: const SizedBox.shrink(), 
         bottomNavigationBar: AppBottomNavBar(
+          selectedIndex: 1, // Home
           onBack: null,
           onHome: () {},
           onCommunities: () {
@@ -83,7 +83,14 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             );
           },
-          onProfile: () {},
+          onProfile: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ProfileScreen(),
+              ),
+            );
+          },
         ),
       ),
     );
