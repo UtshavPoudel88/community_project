@@ -1,9 +1,9 @@
-import 'package:community/screens/profile_screen.dart';
+import 'package:community/features/profile/presentation/pages/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:community/screens/addpost_screen.dart';
-import 'package:community/screens/explore_screen.dart';
-import 'package:community/widgets/app_bottom_nav_bar.dart';
+import 'package:community/features/addposrt/presentation/pages/addpost_screen.dart';
+import 'package:community/features/explore/presentation/pages/explore_screen.dart';
+import 'package:community/core/widgets/app_bottom_nav_bar.dart';
 
 const Color kTopBarColor = Color(0xFF9BB7FF);
 const Color kPageBgColor = Color(0xFFEFF3FF);

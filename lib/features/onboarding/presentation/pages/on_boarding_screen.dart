@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:community/screens/login_screen.dart';
+import 'package:community/features/auth/presentation/pages/login_screen.dart';
 
 const Color kTopBarColor = Color(0xFF9BB7FF);
 const Color kPageBgColor = Color(0xFFEFF3FF);

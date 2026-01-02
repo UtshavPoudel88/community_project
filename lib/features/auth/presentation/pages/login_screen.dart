@@ -1,6 +1,8 @@
+import 'package:community/features/auth/presentation/providers/auth_provider.dart';
+import 'package:community/features/auth/presentation/view_model/auth_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:community/screens/register_screen.dart';
-import 'package:community/screens/home_screen.dart';
+import 'package:community/features/auth/presentation/pages/register_screen.dart';
+import 'package:community/features/dashboard/presentation/pages/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,8 +16,42 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
   bool isPasswordVisible = false;
 
+  AuthProvider? _authProvider;
+  String? _error;
+  bool _loading = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_authProvider == null) {
+      AuthViewModel.create().then((provider) {
+        setState(() {
+          _authProvider = provider;
+        });
+      }).catchError((e) {
+        setState(() {
+          _error = e.toString();
+        });
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_authProvider == null) {
+      if (_error != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error:\n$_error')),
+          );
+        });
+      }
+      return Scaffold(
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -125,27 +161,51 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: double.infinity,
                   height: 45,
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomeScreen(),
-                        ),
-                      );
-                    },
+                    onPressed: _loading || _authProvider == null
+                        ? null
+                        : () async {
+                            setState(() {
+                              _loading = true;
+                              _error = null;
+                            });
+                            final success = await _authProvider!.login(
+                              emailController.text.trim(),
+                              passwordController.text,
+                            );
+                            setState(() {
+                              _loading = false;
+                              _error = _authProvider!.error;
+                            });
+                            if (!success && _error != null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(_error!)),
+                              );
+                            }
+                            if (success) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const HomeScreen(),
+                                ),
+                              );
+                            }
+                          },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text(
-                      "Log In",
-                      style: TextStyle(fontSize: 16),
-                    ),
+                    child: _loading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text(
+                            "Log In",
+                            style: TextStyle(fontSize: 16),
+                          ),
                   ),
                 ),
 
+                // Error message is now shown via SnackBar
                 const SizedBox(height: 25),
 
                 Center(

@@ -1,3 +1,5 @@
+import 'package:community/features/auth/presentation/providers/auth_provider.dart';
+import 'package:community/features/auth/presentation/view_model/auth_view_model.dart';
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
 
@@ -16,8 +18,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool isPasswordVisible = false;
   bool isConfirmPasswordVisible = false;
 
+  AuthProvider? _authProvider;
+  String? _error;
+  bool _loading = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_authProvider == null) {
+      AuthViewModel.create().then((provider) {
+        setState(() {
+          _authProvider = provider;
+        });
+      }).catchError((e) {
+        setState(() {
+          _error = e.toString();
+        });
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_authProvider == null) {
+      if (_error != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error:\n$_error')),
+          );
+        });
+      }
+      return Scaffold(
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -158,27 +194,60 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 width: double.infinity,
                 height: 45,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Sign Up Logic
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LoginScreen()),
-                    );
-                  },
+                  onPressed: _loading || _authProvider == null
+                      ? null
+                      : () async {
+                          if (passwordController.text != confirmPasswordController.text) {
+                            setState(() {
+                              _error = "Passwords do not match";
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(_error!)),
+                            );
+                            return;
+                          }
+                          setState(() {
+                            _loading = true;
+                            _error = null;
+                          });
+                          final success = await _authProvider!.signUp(
+                            nameController.text.trim(),
+                            emailController.text.trim(),
+                            passwordController.text,
+                          );
+                          setState(() {
+                            _loading = false;
+                            _error = _authProvider!.error;
+                          });
+                          if (!success && _error != null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(_error!)),
+                            );
+                          }
+                          if (success) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginScreen()),
+                            );
+                          }
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(
-                    "Sign Up",
-                    style: TextStyle(fontSize: 16),
-                  ),
+                  child: _loading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                          "Sign Up",
+                          style: TextStyle(fontSize: 16),
+                        ),
                 ),
               ),
 
+              // Error message is now shown via SnackBar
               const SizedBox(height: 20),
 
               Center(
