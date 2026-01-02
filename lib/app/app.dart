@@ -1,4 +1,4 @@
-import 'package:community/screens/login_screen.dart';
+import 'package:community/features/auth/presentation/pages/login_screen.dart';
 import 'package:flutter/material.dart';
 
 
@@ -8,7 +8,10 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home:const LoginScreen(),
+      theme: ThemeData(
+        fontFamily: 'Open Sans',
+      ),
+      home: const LoginScreen(),
     );
   }
 }

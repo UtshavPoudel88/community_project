@@ -1,6 +1,6 @@
-import 'package:community/screens/profile_screen.dart';
+import 'package:community/features/profile/presentation/pages/profile_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:community/widgets/app_bottom_nav_bar.dart';
+import 'package:community/core/widgets/app_bottom_nav_bar.dart';
 
 class ExploreScreen extends StatelessWidget {
   final Function(Map<String, String>) onJoin;

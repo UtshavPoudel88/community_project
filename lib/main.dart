@@ -1,7 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:community/screens/splash_screen.dart';
 
-void main() {
+import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:community/features/splash/presentation/pages/splash_screen.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
   runApp(const MyApp());
 }
 

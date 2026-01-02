@@ -1,9 +1,9 @@
-import 'package:community/screens/profile_screen.dart';
+import 'package:community/features/profile/presentation/pages/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:community/screens/explore_screen.dart';
-import 'package:community/screens/addpost_screen.dart';
-import 'package:community/widgets/app_bottom_nav_bar.dart';
+import 'package:community/features/explore/presentation/pages/explore_screen.dart';
+import 'package:community/features/addposrt/presentation/pages/addpost_screen.dart';
+import 'package:community/core/widgets/app_bottom_nav_bar.dart';
 
 const Color kTopBarColor = Color(0xFF9BB7FF);
 const Color kPageBgColor = Color(0xFFF5F7FF);
@@ -55,8 +55,9 @@ class _HomeScreenState extends State<HomeScreen> {
             "HOME",
             style: TextStyle(
               color: Colors.black,
-              fontSize: 22,
+              fontFamily: 'Open Sans',
               fontWeight: FontWeight.bold,
+              fontSize: 22,
             ),
           ),
         ),
@@ -65,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ===== Profile Section =====
+
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -94,6 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           const Text(
                             'Welcome, User!',
                             style: TextStyle(
+                              fontFamily: 'Open Sans',
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
@@ -116,7 +118,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                         const ProfileScreen()),
                               );
                             },
-                            child: const Text('View Profile'),
+                            child: const Text(
+                              'View Profile',
+                              style: TextStyle(
+                                fontFamily: 'Open Sans',
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -127,39 +134,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const SizedBox(height: 24),
 
-              // ===== Your Communities Header =====
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Your Communities',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextButton.icon(
-                    style: TextButton.styleFrom(
-                      foregroundColor: kTopBarColor,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              ExploreScreen(onJoin: addCommunity),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.add),
-                    label: const Text('Add'),
-                  ),
-                ],
+
+              const Text(
+                'Your Communities',
+                style: TextStyle(
+                  fontFamily: 'Open Sans',
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
 
               const SizedBox(height: 16),
 
-              // ===== Communities List =====
               Column(
                 children: communities.map((community) {
                   int index = communities.indexOf(community);
@@ -192,6 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Text(
                                 community['title']!,
                                 style: const TextStyle(
+                                  fontFamily: 'Open Sans',
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
                                 ),
@@ -200,6 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               const Text(
                                 'Latest discussions and posts here',
                                 style: TextStyle(
+                                  fontFamily: 'Open Sans',
                                   color: Colors.grey,
                                   fontSize: 12,
                                 ),
