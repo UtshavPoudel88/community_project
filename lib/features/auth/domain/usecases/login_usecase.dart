@@ -1,11 +1,39 @@
-import '../entities/user_entity.dart';
-import '../repositories/auth_repository.dart';
+import 'package:community/core/error/failure.dart';
+import 'package:community/core/usecase/app_usecase.dart';
+import 'package:community/features/auth/data/repositories/auth_repository.dart';
+import 'package:community/features/auth/domain/entities/user_entity.dart';
+import 'package:community/features/auth/domain/repositories/auth_repository.dart';
+import 'package:dartz/dartz.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LoginUseCase {
-  final AuthRepository repository;
-  LoginUseCase(this.repository);
+class LoginParams extends Equatable {
 
-  Future<UserEntity?> call(String email, String password) {
-    return repository.login(email, password);
+  final String email;
+  final String password;
+  const LoginParams({
+    required this.email,
+    required this.password,
+  });
+  @override
+  List<Object?> get props => [email, password];
+}
+
+// prvider for login usecase
+final loginUsecaseProvider = Provider<LoginUsecase>((ref) {
+  final authRepository = ref.read(authRepositoryProvider);
+  return LoginUsecase(authRepository: authRepository);
+});
+    
+
+class LoginUsecase implements UsecaseWithParms<AuthEntity, LoginParams> {
+ 
+  final IAuthRepository _authRepository;
+  LoginUsecase({required IAuthRepository authRepository})
+    : _authRepository = authRepository;
+  @override
+  Future<Either<Failure, AuthEntity>> call(LoginParams params) {
+    return _authRepository.login(params.email, params.password);
   }
+
 }
